@@ -1,4 +1,4 @@
-# APIAQuant user manual
+# iQuant user manual
 
 ### 0. How to start the software
 
@@ -10,12 +10,12 @@ Please download the apia.rar file and unzip it. In the directory you can find a 
 
 After the software starts, please click the "**login**" button. Then enter the following username and password to log in to the software.
 
-- username : apia2020
-- password : apia2020
+- username : --------
+- password : --------
 
 
 
-<img src="D:\A-UTC\1PEDAGOGIQUE\P2020\TN10\iQuant\images\page0.jpg" alt="page0" style="zoom: 50%;" />
+<img src="https://github.com/Haifei-ZHANG/iQuant/blob/master/images/page0.jpg" style="zoom:50%;" />
 
 
 
@@ -25,8 +25,7 @@ The Home page mainly displays the price information of the ETF, including the la
 
 
 
-<img src="D:\A-UTC\1PEDAGOGIQUE\P2020\TN10\iQuant\images\page1.jpg" alt="page1" style="zoom: 50%;" />
-
+<img src="https://github.com/Haifei-ZHANG/iQuant/blob/master/images/page1.jpg" style="zoom:50%;" />
 
 
 #### 3. Manage ETF
@@ -36,7 +35,7 @@ When adding a new ETF, we support adding multiple ETFs at the same time. It shou
 
 
 
-<img src="D:\A-UTC\1PEDAGOGIQUE\P2020\TN10\iQuant\images\page2.jpg" alt="page2" style="zoom:50%;" />
+<img src="https://github.com/Haifei-ZHANG/iQuant/blob/master/images/page2.jpg" style="zoom:50%;" />
 
 
 
@@ -46,7 +45,7 @@ Although our software has completely updated the historical data when it is star
 
 
 
-<img src="D:\A-UTC\1PEDAGOGIQUE\P2020\TN10\iQuant\images\page3.jpg" alt="page3" style="zoom:50%;" />
+<img src="https://github.com/Haifei-ZHANG/iQuant/blob/master/images/page3.jpg" style="zoom:50%;" />
 
 
 
@@ -56,7 +55,7 @@ This page will display the ETF candlestick chart. We provide three drop-down box
 
 
 
-<img src="D:\A-UTC\1PEDAGOGIQUE\P2020\TN10\iQuant\images\page4.jpg" alt="page4" style="zoom:50%;" />
+<img src="https://github.com/Haifei-ZHANG/iQuant/blob/master/images/page4.jpg" style="zoom:50%;" />
 
 
 
@@ -72,7 +71,9 @@ For SVM, **Back window** represents how many cycles of data used to predict the 
 
 For AMA, the **price type** represents which price we use to calculate the AMA. **ER Window** indicates how many periods are used to calculate the efficiency ratio. Fast window and Slow window indicate the number of calculation periods for fast EMA and slow EMA.
 
-![page5](D:\A-UTC\1PEDAGOGIQUE\P2020\TN10\iQuant\images\page5.jpg)
+
+
+<img src="https://github.com/Haifei-ZHANG/iQuant/blob/master/images/page5.jpg" style="zoom:50%;" />
 
 
 
@@ -86,7 +87,7 @@ In Historical Backtests you can select the reports of the backtests that have be
 
 
 
-![page6](D:\A-UTC\1PEDAGOGIQUE\P2020\TN10\iQuant\images\page6.jpg)
+<img src="https://github.com/Haifei-ZHANG/iQuant/blob/master/images/page6.jpg" style="zoom:50%;" />
 
 
 
@@ -96,7 +97,9 @@ We have integrated the most frequently used core strategy tables into the softwa
 
 The first form needs to be filled out manually. Only the type of position needs to be entered in the table2, and the remaining data will be automatically calculated based on the data in the first table (in order to prevent human error, the automatically calculated data cannot be edited). The table3 will score the current status. Most of the data needs to be entered manually (except for the Profit Zone, which is calculated based on the Ratio in the table2). Of course, the last two rows in the table3 are also automatically calculated. Remember to save each time you change the form.
 
-![page7](D:\A-UTC\1PEDAGOGIQUE\P2020\TN10\iQuant\images\page7.jpg)
+
+
+<img src="https://github.com/Haifei-ZHANG/iQuant/blob/master/images/page7.jpg" style="zoom:50%;" />
 
 
 
@@ -106,4 +109,4 @@ This tool allows you to control the position based on the current price and ATR.
 
 If possible, multiplying the position size calculated here with the conclusion in Trading Signals to obtain the position size under the current trading signals is also a good choice.
 
-![page8](D:\A-UTC\1PEDAGOGIQUE\P2020\TN10\iQuant\images\page8.jpg)
+<img src="https://github.com/Haifei-ZHANG/iQuant/blob/master/images/page8.jpg" style="zoom:50%;" />
