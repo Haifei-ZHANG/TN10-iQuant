@@ -118,6 +118,7 @@ class TradingSignal(QWidget):
         # self.horizontalHeader().setFixedHeight(80)
         # 设置默认行高
         self.signals_table.verticalHeader().setDefaultSectionSize(30)
+        self.signals_table.horizontalHeader().setFont(QFont('arial', 12, QFont.Bold))
         # 设置行和列的名称
         self.signals_table.setHorizontalHeaderLabels(self.etfs)
         self.signals_table.setVerticalHeaderLabels(self.signals_names)
@@ -311,6 +312,10 @@ class TradingSignal(QWidget):
                                          + 0.25 * self.over_ama[i]
                                          + 0.2 * (self.ama_direction[i] + self.svm_probability[i])
                                          + 0.1 * self.over_ema20[i], 2))
+
+            # 保存conclusion
+            np.save('./Data/conclusion.npy', np.array(self.conclusion))
+
 
         # 将这些数据显示到表格中
         for i in range(len(self.etfs)):
