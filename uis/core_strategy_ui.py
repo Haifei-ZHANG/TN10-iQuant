@@ -55,10 +55,11 @@ class CoreStrategy(QWidget):
         self.supply_demande_zones_table.horizontalHeader().setDefaultAlignment(Qt.AlignCenter)
         self.supply_demande_zones_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.supply_demande_zones_table.verticalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        self.supply_demande_zones_table.verticalHeader().setDefaultAlignment(Qt.AlignRight)
+        self.supply_demande_zones_table.verticalHeader().setDefaultAlignment(Qt.AlignCenter)
         # self.horizontalHeader().setFixedHeight(80)
         # 设置默认行高
         self.supply_demande_zones_table.verticalHeader().setDefaultSectionSize(20)
+        self.supply_demande_zones_table.horizontalHeader().setFont(myfont)
         # 设置行和列的名称
         self.supply_demande_zones_table.setHorizontalHeaderLabels(self.etfs)
         self.supply_demande_zones_table.setVerticalHeaderLabels(self.supply_demande_zones_rownames)
@@ -78,10 +79,11 @@ class CoreStrategy(QWidget):
         # 设置放缩方式
         self.proposed_trades_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.proposed_trades_table.verticalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        self.proposed_trades_table.verticalHeader().setDefaultAlignment(Qt.AlignRight)
+        self.proposed_trades_table.verticalHeader().setDefaultAlignment(Qt.AlignCenter)
         self.proposed_trades_table.horizontalHeader().setFixedHeight(80)
         # 设置默认行高
         self.proposed_trades_table.verticalHeader().setDefaultSectionSize(20)
+        self.proposed_trades_table.horizontalHeader().setFont(myfont)
         # 设置行和列的名称
         self.proposed_trades_table.setHorizontalHeaderLabels(self.etfs)
         self.proposed_trades_table.setVerticalHeaderLabels(self.proposed_trade_rownames)
@@ -94,17 +96,18 @@ class CoreStrategy(QWidget):
         odds_enhancers_label = QLabel('Odds Enhancers')
         main_layout.addWidget(odds_enhancers_label, 14, 0, 1, 1)
 
-        # 创建第二个表格
+        # 创建第三个表格
         self.odds_enhancers_table = QTableWidget()
         self.odds_enhancers_table.setRowCount(len(self.odds_enhancers_rownames))
         self.odds_enhancers_table.setColumnCount(len(self.etfs))
         # 设置放缩方式
         self.odds_enhancers_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.odds_enhancers_table.verticalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        self.odds_enhancers_table.verticalHeader().setDefaultAlignment(Qt.AlignRight)
+        self.odds_enhancers_table.verticalHeader().setDefaultAlignment(Qt.AlignCenter)
         self.odds_enhancers_table.horizontalHeader().setFixedHeight(80)
         # 设置默认行高
         self.odds_enhancers_table.verticalHeader().setDefaultSectionSize(20)
+        self.odds_enhancers_table.horizontalHeader().setFont(myfont)
         # 设置行和列的名称
         self.odds_enhancers_table.setHorizontalHeaderLabels(self.etfs)
         self.odds_enhancers_table.setVerticalHeaderLabels(self.odds_enhancers_rownames)
