@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QTableWidget, QTableWidgetItem, QLineEdit, \
                             QPushButton, QAbstractItemView, QHeaderView, QMessageBox
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QColor
 from PyQt5.QtCore import Qt
 import pandas as pd
 import numpy as  np
@@ -20,18 +20,36 @@ class PositionCalculator(QWidget):
         except FileNotFoundError:
             self.etfs = ['SPY', 'QQQ', 'TLT', 'GLD', 'IWM', 'EFA', 'HYG', 'XLV']
 
+        # 获取交易信号
+        try:
+            self.conclusion = np.load('./Data/conclusion.npy').tolist()
+        except FileNotFoundError:
+            self.conclusion = [0] * len(self.etfs)
+
+
         # 创建atr列表
         self.atr_list = []
 
 
         # get ATR
-        for etf in self.etfs:
-            raw_data = load_rawdata(etf, 'weekly')
+        self.lines = []
+        for i in range(len(self.etfs)):
+            raw_data = load_rawdata(self.etfs[i], 'daily')
             if raw_data is None:
                 continue
             data_stats = stockstats.StockDataFrame.retype(raw_data.copy())
             atr = round(data_stats['atr'].iloc[-1], 2)
             self.atr_list.append(atr)
+
+            #计算周上面的五条线指标
+            raw_data = load_rawdata(self.etfs[i], 'weekly')
+            data_stats = stockstats.StockDataFrame.retype(raw_data.copy())
+            BB = round(data_stats["close_20_ema"][-1], 2)
+            UBB = round(BB + 2 * data_stats["close_20_mstd"][-1], 2)
+            plus_half_sd = round(BB + 0.5 * data_stats["close_20_mstd"][-1], 2)
+            minus_half_sd = round(BB - 0.5 * data_stats["close_20_mstd"][-1], 2)
+            LBB = round(BB - 2 * data_stats["close_20_mstd"][-1], 2)
+            self.lines.append([UBB, plus_half_sd, BB, minus_half_sd, LBB])
 
         # 开始创建页面
         # 设置主要字体
@@ -89,37 +107,36 @@ class PositionCalculator(QWidget):
         self.main_layout.addWidget(top_widget)
 
         # 创建显示position的表格
+        self.rows_name = ['Current Price','Risk Exposure','Daily ATR','Trend','Trend Score','Position','Entry Proximal',
+                          'Entry Distal','Target','Stop Price','Position Size','Position Value']
         self.position_table = QTableWidget()
-        self.position_table.setRowCount(len(self.etfs))
-        self.position_table.setColumnCount(7)
+        self.position_table.setColumnCount(len(self.etfs))
+        self.position_table.setRowCount(len(self.rows_name))
+        
         # 设置宽度自由扩展
+        self.position_table.horizontalHeader().setMinimumHeight(60)
+        self.position_table.horizontalHeader().setDefaultAlignment(Qt.AlignCenter)
         self.position_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.position_table.verticalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.position_table.verticalHeader().setDefaultAlignment(Qt.AlignCenter)
+
         # 设置表头高度
         self.position_table.horizontalHeader().setMinimumHeight(60)
-        self.position_table.horizontalHeader().setFont(QFont(self.myfont))
-        # 设置默认行高
-        self.position_table.verticalHeader().setDefaultSectionSize(42)
+        self.position_table.horizontalHeader().setFont(self.myfont)
+        self.position_table.verticalHeader().setFont(self.myfont)
         # 设置表头内容
-        self.position_table.setHorizontalHeaderLabels(
-            ['ETF', 'Risk Exposure', 'ATR', 'Current Price', 'Stop Price', 'Position Size', 'Position Value'])
+        self.position_table.setHorizontalHeaderLabels(self.etfs)
+        self.position_table.setVerticalHeaderLabels(self.rows_name)
 
         # 禁止编辑
         self.position_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        # 整行选择
-        self.position_table.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.position_table.setSelectionMode(QAbstractItemView.NoSelection)
-        # 自动调整行和列
-        # price_table.resizeColumnsToContents()
-        # price_table.resizeRowsToContents()
+ 
         # 隐藏纵向header
-        self.position_table.verticalHeader().setVisible(False)
+        #self.position_table.verticalHeader().setVisible(False)
 
         # 将表格加入main_layout
         self.main_layout.addWidget(self.position_table)
 
-
-        # 设置真个窗口的布局
-        self.setLayout(self.main_layout)
 
     def get_cur_price(self):
         # 获取最新价格
@@ -147,50 +164,73 @@ class PositionCalculator(QWidget):
         position_sizes = []
         position_values = []
 
+        table_content = [[]] * len(self.etfs)
         for i in range(len(self.etfs)):
-            stop_prices.append(round(current_price[i] - self.atr_list[i] * stop_coef, 2))
-            position_sizes.append(int(risk_exposure/self.atr_list[i]))
-            if position_sizes[i] * current_price[i] > capital:
-                position_sizes[i] = int(capital/current_price[i])
+            trend_score = self.conclusion[i]
+            if trend_score >= 0:
+                trend = 'Up'
+                if trend_score < 0.4:
+                    position = 'No Trade'
+                else:
+                    position = 'Long'
+                proximal = round(self.lines[i][1],2)
+                distal = round(self.lines[i][2],2)
+                target = round(self.lines[i][0],2)
+                stop =  round(distal - self.atr_list[i] * stop_coef, 2)
+                size = int(risk_exposure/self.atr_list[i])
+                if size * current_price[i] > capital:
+                    size = int(capital/current_price[i])
+                value = round(size*current_price[i], 2)
 
-            position_values.append(round(position_sizes[i]*current_price[i], 2))
+            else:
+                trend = 'Down'
+                if trend_score > -0.4:
+                    position = 'No Trade'
+                else:
+                    position = 'Short'
+                proximal = round(self.lines[i][1],3)
+                distal = round(self.lines[i][2],2)
+                target = round(self.lines[i][0],4)
+                stop =  round(distal + self.atr_list[i] * stop_coef, 2)
+                size = int(risk_exposure/self.atr_list[i])
+                if size * current_price[i] > capital:
+                    size = int(capital/current_price[i])
+                value = round(size*current_price[i], 2)
+
+            table_content[i] = [str(current_price[i]),
+                                str(risk_exposure),
+                                str(self.atr_list[i]),
+                                trend,
+                                str(trend_score),
+                                position,
+                                str(proximal),
+                                str(distal),
+                                str(target),
+                                str(stop),
+                                str(size),
+                                str(value)]
+
 
         # 设置表格的值
         for i in range(len(self.etfs)):
-            etf_item = QTableWidgetItem(self.etfs[i])
-            etf_item.setTextAlignment(Qt.AlignCenter)
-            etf_item.setFont(self.myfont)
-            self.position_table.setItem(i, 0, etf_item)
+            # 确定配色
+            if float(table_content[i][4]) >= 0.4:
+                # long为绿色
+                color = QColor(0, 255, 0)
+            elif float(table_content[i][4]) <= -0.4:
+                # short为红色
+                color = QColor(255, 0, 0)
+            else:
+                # sideways为黄色
+                color = QColor(255, 255, 0)
+            for j in range(len(self.rows_name)):
+                item = QTableWidgetItem(table_content[i][j])
+                item.setTextAlignment(Qt.AlignCenter)
+                if j > 2:
+                    item.setForeground(color)
+                item.setFont(self.myfont)
+                self.position_table.setItem(j, i, item)
 
-            risk_item = QTableWidgetItem(str(risk_exposure))
-            risk_item.setTextAlignment(Qt.AlignCenter)
-            risk_item.setFont(self.myfont)
-            self.position_table.setItem(i, 1, risk_item)
-
-            atr_item = QTableWidgetItem(str(self.atr_list[i]))
-            atr_item.setTextAlignment(Qt.AlignCenter)
-            atr_item.setFont(self.myfont)
-            self.position_table.setItem(i, 2, atr_item)
-
-            cur_item = QTableWidgetItem(str(current_price[i]))
-            cur_item.setTextAlignment(Qt.AlignCenter)
-            cur_item.setFont(self.myfont)
-            self.position_table.setItem(i, 3, cur_item)
-
-            stop_item = QTableWidgetItem(str(stop_prices[i]))
-            stop_item.setTextAlignment(Qt.AlignCenter)
-            stop_item.setFont(self.myfont)
-            self.position_table.setItem(i, 4, stop_item)
-
-            size_item = QTableWidgetItem(str(position_sizes[i]))
-            size_item.setTextAlignment(Qt.AlignCenter)
-            size_item.setFont(self.myfont)
-            self.position_table.setItem(i, 5, size_item)
-
-            value_item = QTableWidgetItem(str(position_values[i]))
-            value_item.setTextAlignment(Qt.AlignCenter)
-            value_item.setFont(self.myfont)
-            self.position_table.setItem(i, 6, value_item)
 
     def show_position_table(self):
         try:
