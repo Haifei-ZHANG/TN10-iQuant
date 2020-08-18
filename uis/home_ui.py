@@ -48,6 +48,7 @@ class Home(QWidget):
         # self.horizontalHeader().setFixedHeight(80)
         self.weekly_table.horizontalHeader().setMinimumHeight(60)
         self.weekly_table.horizontalHeader().setFont(QFont(QFont('Arial', 12, QFont.Bold)))
+        self.weekly_table.verticalHeader().setSectionResizeMode(QHeaderView.Stretch)
         # 设置默认行高
         self.weekly_table.verticalHeader().setDefaultSectionSize(42)
         self.weekly_table.setHorizontalHeaderLabels(self.columns)
@@ -84,6 +85,7 @@ class Home(QWidget):
         # self.horizontalHeader().setFixedHeight(80)
         self.monthly_table.horizontalHeader().setMinimumHeight(60)
         self.monthly_table.horizontalHeader().setFont(QFont(QFont('Arial', 12, QFont.Bold)))
+        self.monthly_table.verticalHeader().setSectionResizeMode(QHeaderView.Stretch)
         # 设置默认行高
         self.monthly_table.verticalHeader().setDefaultSectionSize(42)
         self.monthly_table.setHorizontalHeaderLabels(self.columns)
