@@ -188,9 +188,9 @@ class PositionCalculator(QWidget):
                     position = 'No Trade'
                 else:
                     position = 'Short'
-                proximal = round(self.lines[i][1],3)
+                proximal = round(self.lines[i][3],2)
                 distal = round(self.lines[i][2],2)
-                target = round(self.lines[i][0],4)
+                target = round(self.lines[i][4],2)
                 stop =  round(distal + self.atr_list[i] * stop_coef, 2)
                 size = int(risk_exposure/self.atr_list[i])
                 if size * current_price[i] > capital:
