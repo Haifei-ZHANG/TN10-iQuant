@@ -20,12 +20,6 @@ class PositionCalculator(QWidget):
         except FileNotFoundError:
             self.etfs = ['SPY', 'QQQ', 'TLT', 'GLD', 'IWM', 'EFA', 'HYG', 'XLV']
 
-        # 获取交易信号
-        try:
-            self.conclusion = np.load('./Data/conclusion.npy').tolist()
-        except FileNotFoundError:
-            self.conclusion = [0] * len(self.etfs)
-
 
         # 创建atr列表
         self.atr_list = []
@@ -150,6 +144,12 @@ class PositionCalculator(QWidget):
 
 
     def calculate_position(self, capital, risk_tolerance, stop_coef, data=None):
+        # 获取交易信号
+        try:
+            self.conclusion = np.load('./Data/conclusion.npy').tolist()
+        except FileNotFoundError:
+            self.conclusion = [0] * len(self.etfs)
+            
         if data is None:
             # 此时是由鼠标点击造成的
             current_price = self.get_cur_price()
